@@ -507,7 +507,7 @@ export default function Home() {
                       <input
                         type="text"
                         placeholder="ENTER JOIN CODE"
-                        maxLength={5}
+                        maxLength={6}
                         value={joinCode}
                         onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
                         onKeyDown={(e) => {
