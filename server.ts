@@ -8,6 +8,7 @@ import rateLimit from 'express-rate-limit';
 
 async function startServer() {
   const app = express();
+  app.set('trust proxy', 1);
   
   // Security Headers
   app.use(helmet({
@@ -91,6 +92,7 @@ async function startServer() {
       const roomCode = socketToRoom.get(socket.id);
       if (roomCode) {
         const room = rooms.get(roomCode);
+        console.log(`[Join] Room ${roomCode} exists:`, !!room);
         if (room) {
           socket.to(roomCode).emit('peer_left', { peerId: socket.id, explicit });
           room.peers.delete(socket.id);
@@ -126,6 +128,7 @@ async function startServer() {
     });
 
     socket.on('join_room', (data) => {
+      console.log('[Join Request]', data);
       if (!data) return;
       const rawRoomCode = typeof data === 'string' ? data : data.code;
       const rawDeviceName = typeof data === 'object' ? data.deviceName : 'Unknown Device';
@@ -145,6 +148,7 @@ async function startServer() {
         room.peers.set(socket.id, deviceName);
         socketToRoom.set(socket.id, roomCode);
         socket.join(roomCode);
+        console.log(`[Join] ${socket.id} joined room ${roomCode}`);
         
         const peersList = Array.from(room.peers.entries()).map(([id, name]) => ({ id, deviceName: name }));
         socket.emit('room_joined', { roomCode, peers: peersList });
