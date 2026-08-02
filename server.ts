@@ -172,12 +172,15 @@ async function startServer() {
       const { to, signal } = data;
       
       if (typeof to !== 'string' || !signal) return;
+
+      console.log('[Signal]', socket.id, '->', to);
       
       io.to(to).emit('signal', {
-        console.log('[Signal forwarded]');
         from: socket.id,
         signal
       });
+
+      console.log('[Signal forwarded]');
     });
 
     socket.on('disconnect', () => {
