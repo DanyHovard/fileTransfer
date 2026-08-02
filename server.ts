@@ -167,12 +167,14 @@ async function startServer() {
 
     // WebRTC signaling validation
     socket.on('signal', (data) => {
+      console.log('[Signal]', socket.id, '->', data.to);
       if (!data || typeof data !== 'object') return;
       const { to, signal } = data;
       
       if (typeof to !== 'string' || !signal) return;
       
       io.to(to).emit('signal', {
+        console.log('[Signal forwarded]');
         from: socket.id,
         signal
       });
